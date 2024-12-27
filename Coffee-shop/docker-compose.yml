@@ -1,0 +1,19 @@
+version: '3.7'
+
+volumes:
+  ts-db:
+
+services:
+  ts-postgres:
+    container_name: coffee-shop-db-2024
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: sa
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: coffee_shop_db
+    volumes:
+      - ts-db:/var/lib/postgresql/data
+    ports:
+      - "5438:5432"
+      
