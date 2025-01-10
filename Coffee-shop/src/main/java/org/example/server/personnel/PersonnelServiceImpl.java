@@ -60,28 +60,21 @@ public class PersonnelServiceImpl implements PersonnelService {
     }
 
     @Override
-    public void updatePersonnelToAddress(int indexPersonnel, String updateAddress) {
+    public void updatePersonnel(int indexPersonnel, int personnelPositionIndex, Personnel updatePersonnel) {
         PersonnelDAO personnelDAO = new PersonnelImpl();
+        PersonnelPositionDAO personnelPositionDAO = new PersonnelPositionImpl();
+        List<PersonnelPosition> personnelPositionList = personnelPositionDAO.findAll();
         List<Personnel> personnelList = personnelDAO.findAll();
         try {
-            Personnel personnel = personnelList.get(indexPersonnel-1);
-            personnel.setAddress(updateAddress);
-            personnelDAO.update(personnel);
-
-        } catch(IndexOutOfBoundsException e) {
-            System.err.println("Invalid name of group");
-            throw new RuntimeException();
-        }
-    }
-
-    @Override
-    public void updatePersonnelToTelephone(int indexPersonnel, String updateTelephone) {
-        PersonnelDAO personnelDAO = new PersonnelImpl();
-        List<Personnel> personnelList = personnelDAO.findAll();
-        try {
-            Personnel personnel = personnelList.get(indexPersonnel-1);
-            personnel.setTelephone(updateTelephone);
-            personnelDAO.update(personnel);
+            PersonnelPosition personnelPosition1 = personnelPositionList.get(personnelPositionIndex-1);
+            Personnel personnel1 = personnelList.get(indexPersonnel-1);
+            personnel1.setPositionId(personnelPosition1.getId());
+            personnel1.setFirstName(updatePersonnel.getFirstName());
+            personnel1.setLastName(updatePersonnel.getLastName());
+            personnel1.setMiddleName(updatePersonnel.getMiddleName());
+            personnel1.setTelephone(updatePersonnel.getTelephone());
+            personnel1.setAddress(updatePersonnel.getAddress());
+            personnelDAO.update(personnel1);
 
         } catch(IndexOutOfBoundsException e) {
             System.err.println("Invalid name of group");

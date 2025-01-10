@@ -55,12 +55,19 @@ public class ClientServiceImpl implements ClientService{
     }
 
     @Override
-    public void updateClientToDiscountPercent(int indexClient, int updateDiscountPercent) {
+    public void updateClient(int indexClient, Client updateClient) {
         ClientDAO clientDAO = new ClientImpl();
         List<Client> clientList = clientDAO.findAll();
         try {
             Client client = clientList.get(indexClient-1);
-            client.setDiscountPercent(updateDiscountPercent);
+            client.setFirstName(updateClient.getFirstName());
+            client.setLastName(updateClient.getLastName());
+            client.setMiddleName(updateClient.getMiddleName());
+            client.setDateOfBirth(updateClient.getDateOfBirth());
+            client.setAddress(updateClient.getAddress());
+            client.setTelephone(updateClient.getTelephone());
+            client.setDiscountPercent(updateClient.getDiscountPercent());
+
             clientDAO.update(client);
 
         } catch(IndexOutOfBoundsException e) {

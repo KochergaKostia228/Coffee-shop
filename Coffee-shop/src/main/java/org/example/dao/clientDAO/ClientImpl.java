@@ -4,6 +4,7 @@ import org.example.dao.ConnectionFactory;
 import org.example.exception.ConnectionDBException;
 import org.example.model.Client;
 import org.example.model.MenuItem;
+import org.example.model.MenuItemType;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -19,6 +20,8 @@ public class ClientImpl implements ClientDAO{
             "VALUES(?,?,?,?,?,?,?)";
 
     private static final String FIND_ALL_CLIENT = "SELECT * FROM Client";
+
+    private static final String FIND_CLIENT_BY_ID = "SELECT * FROM Client WHERE Client.id = ?";
 
     private static final String DELETE_ALL_CLIENT = "DELETE FROM Client";
     private static final String UPDATE_CLIENT = "UPDATE Client SET first_name = ?, last_name = ?, middle_name = ?, date_of_birth = ?, telephone = ?, address = ?, discount_percent = ?" +
@@ -119,6 +122,33 @@ public class ClientImpl implements ClientDAO{
             System.err.println(e.getMessage());
         }
         return resultClients;
+    }
+
+    @Override
+    public Client findById(long id) {
+        Client resultClient = new Client();
+        try (Connection conn = ConnectionFactory.getInstance().makeConnection();
+             PreparedStatement ps = conn.prepareStatement(FIND_CLIENT_BY_ID)) {
+            ps.setLong(1, id);
+
+            ResultSet result = ps.executeQuery();
+
+            while (result.next()) {
+                resultClient.setId(result.getLong(1));
+                resultClient.setFirstName(result.getString(2));
+                resultClient.setLastName(result.getString(3));
+                resultClient.setMiddleName(result.getString(4));
+                resultClient.setDateOfBirth(result.getDate(5));
+                resultClient.setTelephone(result.getString(6));
+                resultClient.setAddress(result.getString(7));
+                resultClient.setDiscountPercent(result.getInt(8));
+            }
+
+            return resultClient;
+        } catch (ConnectionDBException | SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return resultClient;
     }
 
     @Override

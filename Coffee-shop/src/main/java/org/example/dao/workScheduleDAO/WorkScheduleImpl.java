@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,7 +98,7 @@ public class WorkScheduleImpl implements WorkScheduleDAO{
                 addWorkSchedule.setPersonnelId(result.getLong(2));
                 addWorkSchedule.setStartTimeWork(result.getTime(3));
                 addWorkSchedule.setEndTimeWork(result.getTime(4));
-                addWorkSchedule.setPersonnelId(result.getLong(5));
+                addWorkSchedule.setDayWeek(DayOfWeek.valueOf(result.getString(5)));
                 workSchedules.add(addWorkSchedule);
             }
             return workSchedules;

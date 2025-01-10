@@ -18,6 +18,7 @@ public class PersonnelImpl implements PersonnelDAO{
             "VALUES(?,?,?,?,?,?)";
 
     private static final String FIND_ALL_PERSONNEL = "SELECT * FROM Personnel";
+    private static final String FIND_PERSONNEL_BY_ID = "SELECT * FROM Personnel WHERE Personnel.id = ?";
 
     private static final String DELETE_ALL_PERSONNEL = "DELETE FROM Personnel";
     private static final String UPDATE_PERSONNEL = "UPDATE Personnel SET first_name = ?, last_name = ?, middle_name = ?, telephone = ?, address = ?, position_id = ?" +
@@ -125,5 +126,31 @@ public class PersonnelImpl implements PersonnelDAO{
         } catch (ConnectionDBException | SQLException e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    @Override
+    public Personnel findById(long id) {
+        Personnel resultPersonnel = new Personnel();
+        try (Connection conn = ConnectionFactory.getInstance().makeConnection();
+             PreparedStatement ps = conn.prepareStatement(FIND_PERSONNEL_BY_ID)) {
+
+            ps.setLong(1, id);
+
+            ResultSet result = ps.executeQuery();
+
+            while (result.next()) {
+                resultPersonnel.setId(result.getLong(1));
+                resultPersonnel.setFirstName(result.getString(2));
+                resultPersonnel.setLastName(result.getString(3));
+                resultPersonnel.setMiddleName(result.getString(4));
+                resultPersonnel.setTelephone(result.getString(5));
+                resultPersonnel.setAddress(result.getString(6));
+                resultPersonnel.setPositionId(result.getLong(7));
+            }
+            return resultPersonnel;
+        } catch (ConnectionDBException | SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return resultPersonnel;
     }
 }

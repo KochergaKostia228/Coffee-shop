@@ -19,6 +19,7 @@ public class MenuItemImpl implements MenuItemDAO {
             "VALUES(?,?,?,?)";
    
     private static final String FIND_ALL_MENU_ITEM = "SELECT * FROM MenuItem";
+    private static final String FIND_MENU_ITEM_BY_ID = "SELECT * FROM MenuItem WHERE MenuItem.id = ?";
 
     private static final String DELETE_ALL_MENU_ITEM = "DELETE FROM MenuItem";
     private static final String UPDATE_MENU_ITEM = "UPDATE MenuItem SET type_id = ?, name_ukraine_language = ?, name_english_language = ?, price = ?" +
@@ -117,6 +118,30 @@ public class MenuItemImpl implements MenuItemDAO {
         } catch (ConnectionDBException | SQLException e) {
             System.err.println(e.getMessage());
         }
+    }
+
+    @Override
+    public MenuItem findById(long id) {
+        MenuItem resultMenuItem = new MenuItem();
+        try (Connection conn = ConnectionFactory.getInstance().makeConnection();
+             PreparedStatement ps = conn.prepareStatement(FIND_MENU_ITEM_BY_ID)) {
+
+            ps.setLong(1, id);
+
+            ResultSet result = ps.executeQuery();
+
+            while (result.next()) {
+                resultMenuItem.setId(result.getLong(1));
+                resultMenuItem.setTypeId(result.getLong(2));
+                resultMenuItem.setName_ukraine_language(result.getString(3));
+                resultMenuItem.setName_english_language(result.getString(4));
+                resultMenuItem.setPrice(result.getDouble(5));
+            }
+            return resultMenuItem;
+        } catch (ConnectionDBException | SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return resultMenuItem;
     }
 }
 

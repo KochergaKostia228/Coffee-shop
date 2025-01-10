@@ -4,5 +4,5 @@ import org.example.dao.CRUDInterface;
 import org.example.model.Client;
 
 public interface ClientDAO extends CRUDInterface<Client> {
-
+    Client findById(long id);
 }

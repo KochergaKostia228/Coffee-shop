@@ -3,6 +3,7 @@ package org.example.dao.orderInfoDAO;
 import org.example.dao.ConnectionFactory;
 import org.example.exception.ConnectionDBException;
 import org.example.model.MenuItem;
+import org.example.model.MenuItemType;
 import org.example.model.OrderInfo;
 
 import java.math.BigDecimal;
@@ -19,6 +20,7 @@ public class OrderInfoImpl implements OrderInfoDAO{
             "VALUES(?,?,?)";
 
     private static final String FIND_ALL_ORDER_INFO = "SELECT * FROM OrdersInfo";
+    private static final String FIND_ORDER_INFO_BY_ID = "SELECT * FROM OrdersInfo WHERE OrdersInfo.id = ?";
 
     private static final String DELETE_ALL_ORDER_INFO = "DELETE FROM OrdersInfo";
     private static final String UPDATE_ORDER_INFO = "UPDATE OrdersInfo SET client_id = ?, price_with_discount = ?, date = ?" +
@@ -91,11 +93,10 @@ public class OrderInfoImpl implements OrderInfoDAO{
 
             while (result.next()) {
                 OrderInfo addMeOrderInfo = new OrderInfo();
-                ps.setLong(1, addMeOrderInfo.getId());
-                ps.setLong(2, addMeOrderInfo.getClientId());
-                ps.setDouble(3, addMeOrderInfo.getPriceWithDiscount());
-                ps.setDate(4, addMeOrderInfo.getDate());
-                ps.execute();
+                addMeOrderInfo.setId(result.getLong(1));
+                addMeOrderInfo.setClientId(result.getLong(2));
+                addMeOrderInfo.setPriceWithDiscount(result.getDouble(3));
+                addMeOrderInfo.setDate(result.getDate(4));
 
                 resultOrderInfo.add(addMeOrderInfo);
             }
@@ -115,4 +116,26 @@ public class OrderInfoImpl implements OrderInfoDAO{
             System.err.println(e.getMessage());
         }
     }
+
+    @Override
+    public OrderInfo findById(long id) {
+        OrderInfo resultOrderInfo = new OrderInfo();
+        try (Connection conn = ConnectionFactory.getInstance().makeConnection();
+             PreparedStatement ps = conn.prepareStatement(FIND_ORDER_INFO_BY_ID)) {
+            ps.setLong(1, id);
+
+            ResultSet result = ps.executeQuery();
+
+            while (result.next()) {
+                resultOrderInfo.setId(result.getLong(1));
+                resultOrderInfo.setClientId(result.getLong(2));
+                resultOrderInfo.setPriceWithDiscount(result.getDouble(3));
+                resultOrderInfo.setDate(result.getDate(4));
+            }
+
+            return resultOrderInfo;
+        } catch (ConnectionDBException | SQLException e) {
+            System.err.println(e.getMessage());
+        }
+        return resultOrderInfo;    }
 }

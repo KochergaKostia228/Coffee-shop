@@ -20,9 +20,10 @@ public class OrderMenuItemImpl implements OrderMenuItemDAO{
     private static final String FIND_ALL_ORDER_MENU_ITEM = "SELECT * FROM Orders_MenuItems";
 
     private static final String DELETE_ALL_ORDER_MENU_ITEM = "DELETE FROM Orders_MenuItems";
-    private static final String UPDATE_ORDER_MENU_ITEM = "UPDATE Orders_MenuItems SET client_id = ?, price_with_discount = ?, date = ?" +
+
+    private static final String UPDATE_ORDER_MENU_ITEM = "UPDATE Orders_MenuItems SET order_id = ?, menu_item_id = ?, price = ?" +
             " WHERE Orders_MenuItems.id = ? ";
-    private static final String DELETE_ORDER_MENU_ITEM = "DELETE FROM Orders_MenuItems WHERE OrdersInfo.id = ?";
+    private static final String DELETE_ORDER_MENU_ITEM = "DELETE FROM Orders_MenuItems WHERE Orders_MenuItems.id = ?";
 
     @Override
     public void save(OrderMenuItem orderMenuItem) {
@@ -90,11 +91,10 @@ public class OrderMenuItemImpl implements OrderMenuItemDAO{
 
             while (result.next()) {
                 OrderMenuItem addOrderMenuItem = new OrderMenuItem();
-                ps.setLong(1, addOrderMenuItem.getId());
-                ps.setLong(1, addOrderMenuItem.getOrderId());
-                ps.setLong(2, addOrderMenuItem.getMenuItemId());
-                ps.setDouble(3, addOrderMenuItem.getPrice());
-                ps.execute();
+                addOrderMenuItem.setId(result.getLong(1));
+                addOrderMenuItem.setOrderId(result.getLong(2));
+                addOrderMenuItem.setMenuItemId(result.getLong(3));
+                addOrderMenuItem.setPrice(result.getDouble(4));
 
                 resultOrderMenuItem.add(addOrderMenuItem);
             }

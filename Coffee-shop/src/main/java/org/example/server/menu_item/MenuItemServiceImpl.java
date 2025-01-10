@@ -55,12 +55,18 @@ public class MenuItemServiceImpl implements MenuItemService{
     }
 
     @Override
-    public void updateMenuItemToPrice(int index, double price) {
+    public void updateMenuItem(int menuItemIndex, int updateMenuItemTypeIndex, MenuItem updateMenuItem) {
         MenuItemDAO menuItemDAO = new MenuItemImpl();
-        List<MenuItem> menuItemTypeList = menuItemDAO.findAll();
+        MenuItemTypeDAO menuItemTypeDAO = new MenuItemTypeImpl();
+        List<MenuItemType> menuItemTypeList = menuItemTypeDAO.findAll();
+        List<MenuItem> menuItemList = menuItemDAO.findAll();
         try {
-            MenuItem menuItem1 = menuItemTypeList.get(index-1);
-            menuItem1.setPrice(price);
+            MenuItem menuItem1 = menuItemList.get(menuItemIndex-1);
+            MenuItemType updateMenuItemType1 = menuItemTypeList.get(updateMenuItemTypeIndex-1);
+            menuItem1.setTypeId(updateMenuItemType1.getId());
+            menuItem1.setName_ukraine_language(updateMenuItem.getName_ukraine_language());
+            menuItem1.setName_english_language(updateMenuItem.getName_english_language());
+            menuItem1.setPrice(updateMenuItem.getPrice());
             menuItemDAO.update(menuItem1);
 
         } catch(IndexOutOfBoundsException e) {
@@ -81,5 +87,14 @@ public class MenuItemServiceImpl implements MenuItemService{
             System.err.println("Invalid name of group");
             throw new RuntimeException();
         }
+    }
+
+    @Override
+    public MenuItem insertMenuItemToIndex(int index) {
+        MenuItemDAO menuItemDAO = new MenuItemImpl();
+        List<MenuItem> menuItemTypeList = menuItemDAO.findAll();
+
+        MenuItem menuItem1 = menuItemTypeList.get(index-1);
+        return menuItem1;
     }
 }
